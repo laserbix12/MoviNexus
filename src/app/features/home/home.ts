@@ -13,15 +13,10 @@ export class Home {
 
   constructor() {
     afterNextRender(() => {
-      console.warn('⚠️ VERIFICACIÓN: El nuevo código ya está funcionando en Vercel ⚠️');
+      console.log('Angular is running in development mode.');
       console.log('Home Inicializado. Cargando películas...');
-      this.movieService.getTrendingMovies().subscribe({
-        next: (response) => {
-          console.log('✅ ¡Éxito! Datos recibidos de TMDB:', response.results);
-        },
-        error: (err) => {
-          console.error('❌ Error al conectar con TMDB:', err);
-        }
+      this.movieService.getTrendingMovies().subscribe(response => {
+        console.log('✅ ¡Éxito! Datos recibidos de TMDB:', response.results);
       });
     });
   }
