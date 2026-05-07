@@ -1,9 +1,17 @@
-@if (featuredMovie()) {
-  <app-hero [movie]="featuredMovie()!"></app-hero>
+@if (featuredMovie(); as movie) {
+  <app-hero [movie]="movie"></app-hero>
 } @else {
-  <section class="hero loading-hero">
-    <div class="hero-content">
-      <p>Cargando película destacada...</p>
-    </div>
-  </section>
+  <div class="loading-hero"></div>
 }
+
+<div class="home-sections">
+  <app-movie-slider
+    title="Tendencias de Hoy"
+    [movies]="trendingMovies()"
+  ></app-movie-slider>
+
+  <app-movie-slider
+    title="Las más Populares"
+    [movies]="popularMovies()"
+  ></app-movie-slider>
+</div>

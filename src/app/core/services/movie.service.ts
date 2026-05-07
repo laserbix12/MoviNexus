@@ -12,4 +12,9 @@ export class MovieService {
     // Retornamos un Observable (una promesa de que llegarán datos)
     return this.http.get<MovieResponse>(`${this.apiUrl}/trending/movie/day`);
   }
+
+  // NUEVO MÉTODO
+  getPopularMovies() {
+    return this.http.get<MovieResponse>(`${this.apiUrl}/movie/popular`);
+  }
 }
