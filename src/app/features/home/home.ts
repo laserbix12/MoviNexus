@@ -1,23 +1,30 @@
-import { Component, inject, afterNextRender } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
+import { Hero } from './components/hero/hero'; // ¡Importamos el Hero!
+import { Movie } from '../../core/models/movie.model';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, Hero], // Lo añadimos aquí
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit {
   private movieService = inject(MovieService);
 
-  constructor() {
-    afterNextRender(() => {
-      console.log('Angular is running in development mode.');
-      console.log('Home Inicializado. Cargando películas...');
-      this.movieService.getTrendingMovies().subscribe(response => {
-        console.log('✅ ¡Éxito! Datos recibidos de TMDB:', response.results);
-      });
+  // Usamos una Signal para guardar la película destacada
+  featuredMovie = signal<Movie | null>(null);
+
+  ngOnInit(): void {
+    this.movieService.getTrendingMovies().subscribe({
+      next: (data) => {
+        if (data.results.length > 0) {
+          // Tomamos la posición [0] del array para ser el Hero
+          this.featuredMovie.set(data.results[0]);
+        }
+      }
     });
   }
 }

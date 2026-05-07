@@ -1,10 +1,9 @@
-<section class="hero">
-  <div class="hero-content">
-    <h1 class="text-gradient">Bienvenido a MovieNexus</h1>
-    <p class="hero-subtitle">
-      Explora las películas más populares, busca tus favoritas y mantente<br>
-      al día con los últimos estrenos.
-    </p>
-    <a routerLink="/movies" class="btn-primary">Empezar a Explorar</a>
-  </div>
-</section>
+@if (featuredMovie()) {
+  <app-hero [movie]="featuredMovie()!"></app-hero>
+} @else {
+  <section class="hero loading-hero">
+    <div class="hero-content">
+      <p>Cargando película destacada...</p>
+    </div>
+  </section>
+}
