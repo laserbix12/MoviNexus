@@ -1,7 +1,8 @@
 .movie-card {
   position: relative;
   width: 200px;
-  flex: 0 0 auto; /* Importante para que no se aplasten en el scroll horizontal */
+  flex: 0 0 auto;
+  /* Importante para que no se aplasten en el scroll horizontal */
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -10,13 +11,15 @@
 }
 
 .movie-card:hover {
-  transform: scale(1.05); /* Efecto zoom al pasar el mouse */
+  transform: scale(1.05);
+  /* Efecto zoom al pasar el mouse */
   z-index: 10;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .card-image-container {
-  aspect-ratio: 2 / 3; /* Proporción clásica de un póster de cine */
+  aspect-ratio: 2 / 3;
+  /* Proporción clásica de un póster de cine */
   width: 100%;
 }
 
@@ -35,7 +38,8 @@
   padding: 1rem;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
   color: white;
-  opacity: 0; /* Oculto por defecto */
+  opacity: 0;
+  /* Oculto por defecto */
   transition: opacity 0.3s ease;
 }
 
@@ -49,5 +53,6 @@
   margin-bottom: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Pone "..." si el texto es muy largo para caber */
+  text-overflow: ellipsis;
+  /* Pone "..." si el texto es muy largo para caber */
 }

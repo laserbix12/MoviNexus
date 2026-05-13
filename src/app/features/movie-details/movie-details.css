@@ -1,0 +1,106 @@
+.details-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  color: white;
+  background-color: #0a0f24;
+}
+
+/* Control del tamaño de la imagen gigante */
+.backdrop-wrapper {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  /* ¡Esto es lo que evita que se vea inmensa! */
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.backdrop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+/* Difuminado suave para que el texto se lea bien */
+.backdrop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      rgba(10, 15, 36, 0.2) 0%,
+      rgba(10, 15, 36, 0.8) 60%,
+      rgba(10, 15, 36, 1) 100%);
+}
+
+/* Contenido de texto */
+.content-wrapper {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  margin-top: -150px;
+  /* Sube el contenido sobre la imagen */
+  z-index: 10;
+}
+
+.movie-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.overview {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  color: #d1d5db;
+  margin-bottom: 2rem;
+}
+
+/* Botón de volver */
+.back-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-5px);
+}
+
+/* Estado de carga */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .movie-title {
+    font-size: 2.5rem;
+  }
+
+  .content-wrapper {
+    margin-top: -100px;
+  }
+
+  .backdrop-wrapper {
+    height: 40vh;
+  }
+}
