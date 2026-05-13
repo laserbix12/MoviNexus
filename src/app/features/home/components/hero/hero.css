@@ -64,6 +64,7 @@
   /* Limita el texto a 3 líneas y pone '...' si es más largo */
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
