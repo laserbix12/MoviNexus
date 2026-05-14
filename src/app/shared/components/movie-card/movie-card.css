@@ -91,7 +91,7 @@
 }
 
 .favorite-btn.active .heart-icon {
-  fill: #e50914; /* Rojo intenso */
-  stroke: #e50914;
+  fill: #20B2AA; /* Light Sea Green */
+  stroke: #20B2AA;
   transform: scale(1.1);
 }
