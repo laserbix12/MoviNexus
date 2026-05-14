@@ -5,8 +5,49 @@
   </div>
   <nav class="nav-links">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-    <a routerLink="/movies" routerLinkActive="active">Películas</a>
-    <a routerLink="/search" routerLinkActive="active">Buscar</a>
+    <!-- El enlace de 'Buscar' fue eliminado, ahora está integrado en el Header -->
     <a routerLink="/favorites" routerLinkActive="active">Favoritos</a>
   </nav>
+
+  <!-- NUEVO: Contenedor del Buscador -->
+  <div class="search-container">
+    
+    <!-- El Input -->
+    <input 
+      type="text" 
+      class="search-input" 
+      placeholder="Buscar peliculas..."
+      [value]="searchQuery()"
+      (input)="onSearchInput($event)"
+    >
+
+    <!-- Indicador de carga (Spinner) -->
+    @if (isSearching()) {
+      <div class="search-spinner"></div>
+    }
+
+    <!-- Dropdown de resultados -->
+    @if (searchResults().length > 0) {
+      <div class="search-results-dropdown">
+        @for (movie of searchResults(); track movie.id) {
+          <!-- Cada resultado es un enlace a los detalles -->
+          <a 
+            [routerLink]="['/movie', movie.id]" 
+            class="search-result-item"
+            (click)="closeSearch()"
+          >
+            <img 
+              [src]="movie.poster_path ? 'https://image.tmdb.org/t/p/w92' + movie.poster_path : 'assets/no-poster.png'" 
+              [alt]="movie.title"
+              class="result-poster"
+            >
+            <div class="result-info">
+              <span class="result-title">{{ movie.title }}</span>
+              <span class="result-year">{{ movie.release_date | date:'yyyy' }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
 </header>
