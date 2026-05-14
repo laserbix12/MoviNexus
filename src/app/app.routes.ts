@@ -8,5 +8,9 @@ export const routes: Routes = [
   {
     path: 'movie/:id', // :id es el parámetro dinámico
     loadComponent: () => import('./features/movie-details/movie-details').then(m => m.MovieDetails)
+  },
+  {
+    path: 'favorites',
+    loadComponent: () => import('./features/favorites/favorites').then(m => m.Favorites)
   }
 ];
