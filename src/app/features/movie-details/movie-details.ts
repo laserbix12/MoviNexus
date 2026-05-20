@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
 import { Movie } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
+import { MovieTrailerComponent } from './components/movie-trailer/movie-trailer';
 import { Observable, forkJoin } from 'rxjs'; // Importamos RxJS
 import { CreditsResponse } from '../../core/models/cast.model';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, CastCard], // No olvides importar CastCard
+  imports: [CommonModule, CastCard, MovieTrailerComponent], // No olvides importar CastCard y MovieTrailerComponent
   templateUrl: './movie-details.html',
   styleUrl: './movie-details.css'
 })

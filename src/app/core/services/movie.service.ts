@@ -40,4 +40,14 @@ export class MovieService {
       }
     );
   }
+
+  /**
+   * Obtiene los videos (tráilers, teasers, etc.) de una película.
+   * @param id ID de la película en TMDB
+   */
+  getMovieVideos(id: string | number) {
+    return this.http.get<{ results: Array<{ key: string; site: string; type: string; name: string }> }>(
+      `${this.apiUrl}/movie/${id}/videos`
+    );
+  }
 }
