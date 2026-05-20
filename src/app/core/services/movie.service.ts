@@ -15,8 +15,10 @@ export class MovieService {
   }
 
   // NUEVO MÉTODO
-  getPopularMovies() {
-    return this.http.get<MovieResponse>(`${this.apiUrl}/movie/popular`);
+  getPopularMovies(page: number = 1) {
+    return this.http.get<MovieResponse>(`${this.apiUrl}/movie/popular`, {
+      params: { page: page.toString() }
+    });
   }
 
   getMovieById(id: string | number) {
