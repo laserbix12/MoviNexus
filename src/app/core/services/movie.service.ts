@@ -10,6 +10,44 @@ export class MovieService {
   private http = inject(HttpClient); // Inyectamos el motor HTTP
   private apiUrl = environment.baseUrl;
 
+  // Caché para evitar mostrar el esqueleto al volver a la pantalla de inicio
+  private trendingMoviesCache: Movie[] = [];
+  private popularMoviesCache: Movie[] = [];
+  private catalogMoviesCache: Movie[] = [];
+  private catalogCurrentPageCache = 1;
+
+  getTrendingMoviesCache(): Movie[] {
+    return this.trendingMoviesCache;
+  }
+
+  setTrendingMoviesCache(movies: Movie[]): void {
+    this.trendingMoviesCache = movies;
+  }
+
+  getPopularMoviesCache(): Movie[] {
+    return this.popularMoviesCache;
+  }
+
+  setPopularMoviesCache(movies: Movie[]): void {
+    this.popularMoviesCache = movies;
+  }
+
+  getCatalogMoviesCache(): Movie[] {
+    return this.catalogMoviesCache;
+  }
+
+  setCatalogMoviesCache(movies: Movie[]): void {
+    this.catalogMoviesCache = movies;
+  }
+
+  getCatalogCurrentPageCache(): number {
+    return this.catalogCurrentPageCache;
+  }
+
+  setCatalogCurrentPageCache(page: number): void {
+    this.catalogCurrentPageCache = page;
+  }
+
   getTrendingMovies() {
     // Retornamos un Observable (una promesa de que llegarán datos)
     return this.http.get<MovieResponse>(`${this.apiUrl}/trending/movie/day`).pipe(

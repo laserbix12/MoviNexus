@@ -31,22 +31,42 @@ export class Home implements OnInit, AfterViewInit {
   isFetchingNextPage = signal(false);
 
   ngOnInit(): void {
-    // 1. Pedimos las tendencias
-    this.movieService.getTrendingMovies().subscribe({
-      next: (data) => {
-        if (data.results.length > 0) {
-          this.featuredMovie.set(data.results[0]); // Ponemos la #1 como Destacada
-          this.trendingMovies.set(data.results);   // Guardamos la lista completa para el Slider
+    // 1. Pedimos las tendencias (usando caché si existe)
+    const cachedTrending = this.movieService.getTrendingMoviesCache();
+    if (cachedTrending.length > 0) {
+      this.featuredMovie.set(cachedTrending[0]);
+      this.trendingMovies.set(cachedTrending);
+    } else {
+      this.movieService.getTrendingMovies().subscribe({
+        next: (data) => {
+          if (data.results.length > 0) {
+            this.featuredMovie.set(data.results[0]);
+            this.trendingMovies.set(data.results);
+            this.movieService.setTrendingMoviesCache(data.results);
+          }
         }
-      }
-    });
+      });
+    }
 
-    // 2. Pedimos las populares
-    this.movieService.getPopularMovies().subscribe({
-      next: (data) => {
-        this.popularMovies.set(data.results); // Guardamos la lista de populares
-      }
-    });
+    // 2. Pedimos las populares (usando caché si existe)
+    const cachedPopular = this.movieService.getPopularMoviesCache();
+    if (cachedPopular.length > 0) {
+      this.popularMovies.set(cachedPopular);
+    } else {
+      this.movieService.getPopularMovies().subscribe({
+        next: (data) => {
+          this.popularMovies.set(data.results);
+          this.movieService.setPopularMoviesCache(data.results);
+        }
+      });
+    }
+
+    // 3. Restauramos catálogo de scroll infinito si ya fue cargado
+    const cachedCatalog = this.movieService.getCatalogMoviesCache();
+    if (cachedCatalog.length > 0) {
+      this.catalogMovies.set(cachedCatalog);
+      this.currentPage.set(this.movieService.getCatalogCurrentPageCache());
+    }
   }
 
   ngAfterViewInit(): void {
@@ -73,9 +93,15 @@ export class Home implements OnInit, AfterViewInit {
     this.isFetchingNextPage.set(true);
     this.movieService.getPopularMovies(this.currentPage()).subscribe({
       next: (data) => {
-        // 5. Inmutabilidad: Concatenamos los resultados usando el operador spread [...]
-        this.catalogMovies.set([...this.catalogMovies(), ...data.results]);
-        this.currentPage.update(p => p + 1);
+        // 5. Inmutabilidad: Concatenamos los resultados usando el operador spread [...] y actualizamos caché
+        const updatedCatalog = [...this.catalogMovies(), ...data.results];
+        this.catalogMovies.set(updatedCatalog);
+        this.movieService.setCatalogMoviesCache(updatedCatalog);
+
+        const nextPage = this.currentPage() + 1;
+        this.currentPage.set(nextPage);
+        this.movieService.setCatalogCurrentPageCache(nextPage);
+
         this.isFetchingNextPage.set(false);
       }
     });
