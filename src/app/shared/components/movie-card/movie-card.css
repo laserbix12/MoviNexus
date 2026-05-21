@@ -91,7 +91,7 @@
 }
 
 .favorite-btn.active .heart-icon {
-  fill: #20B2AA; /* Light Sea Green */
-  stroke: #20B2AA;
+  fill: url(#heartGradient);
+  stroke: url(#heartGradient);
   transform: scale(1.1);
 }

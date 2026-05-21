@@ -11,7 +11,11 @@ export class FavoritesService {
   public favorites = signal<Movie[]>([]);
 
   constructor() {
-    this.loadFavorites();
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.loadFavorites();
+      }, 0);
+    }
   }
 
   private loadFavorites(): void {
