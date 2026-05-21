@@ -6,14 +6,16 @@
   --text-primary: #ffffff;
   --text-secondary: #94a3b8;
   --text-muted: #94a3b8;
-  --primary: #06b6d4; /* Usamos tu accent-cyan como color principal */
+  --primary: #06b6d4;
+  /* Usamos tu accent-cyan como color principal */
   --primary-glow: rgba(6, 182, 212, 0.3);
-  --accent: #10b981; /* Usamos tu accent-emerald como color secundario */
+  --accent: #10b981;
+  /* Usamos tu accent-emerald como color secundario */
   --nav-bg: rgba(11, 17, 33, 0.8);
 
   /* Gradientes Premium (Con tus colores) */
   --grad-main: linear-gradient(135deg, var(--primary), var(--accent));
-  --grad-surface: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+  --grad-surface: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent);
 
   /* Espaciado y Radio (Consistencia) */
   --spacing-sm: 0.5rem;
@@ -110,6 +112,7 @@ body {
   0% {
     background-position: -1000px 0;
   }
+
   100% {
     background-position: 1000px 0;
   }
@@ -118,13 +121,11 @@ body {
 /* Clase de utilidad reutilizable */
 .skeleton-base {
   background: #2a2a2a;
-  background-image: linear-gradient(
-    to right,
-    #2a2a2a 0%,
-    #3a3a3a 20%,
-    #2a2a2a 40%,
-    #2a2a2a 100%
-  );
+  background-image: linear-gradient(to right,
+      #2a2a2a 0%,
+      #3a3a3a 20%,
+      #2a2a2a 40%,
+      #2a2a2a 100%);
   background-repeat: no-repeat;
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear forwards;
@@ -137,10 +138,10 @@ body {
 /* Hacemos que todas las transiciones sean un poco más lentas y fluidas para apreciarlas */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.4s;
+  animation-duration: 5ms;
 }
 
 ::view-transition-group(*) {
-  animation-duration: 0.4s;
+  animation-duration: 5ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

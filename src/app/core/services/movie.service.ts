@@ -3,7 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Movie, MovieResponse } from '../models/movie.model';
 import { CreditsResponse } from '../models/cast.model';
-import { delay } from 'rxjs/operators';
+import { delay, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' }) // Disponible en toda la app
 export class MovieService {
@@ -51,7 +52,11 @@ export class MovieService {
   getTrendingMovies() {
     // Retornamos un Observable (una promesa de que llegarán datos)
     return this.http.get<MovieResponse>(`${this.apiUrl}/trending/movie/day`).pipe(
-      delay(2000)
+      delay(2000),
+      catchError((error) => {
+        console.error('Error fetching trending movies:', error);
+        return of({ page: 1, results: [], total_pages: 1, total_results: 0 } as MovieResponse);
+      })
     );
   }
 
@@ -60,7 +65,11 @@ export class MovieService {
     return this.http.get<MovieResponse>(`${this.apiUrl}/movie/popular`, {
       params: { page: page.toString() }
     }).pipe(
-      delay(2000)
+      delay(2000),
+      catchError((error) => {
+        console.error('Error fetching popular movies:', error);
+        return of({ page: 1, results: [], total_pages: 1, total_results: 0 } as MovieResponse);
+      })
     );
   }
 
