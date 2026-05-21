@@ -1,11 +1,12 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
 import { Movie } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
 import { MovieTrailerComponent } from './components/movie-trailer/movie-trailer';
-import { Observable, forkJoin } from 'rxjs'; // Importamos RxJS
+import { Observable, forkJoin } from 'rxjs';
 import { CreditsResponse } from '../../core/models/cast.model';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-movie-details',
@@ -16,6 +17,9 @@ import { CreditsResponse } from '../../core/models/cast.model';
 })
 export class MovieDetails implements OnInit {
   private movieService = inject(MovieService);
+  private location = inject(Location);
+  private document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
   @Input() id!: string;
 
   // Declaramos un Observable que contendrá TODOS los datos que necesitamos
@@ -33,5 +37,17 @@ export class MovieDetails implements OnInit {
 
   getBackdropUrl(path: string | null | undefined): string {
     return path ? `https://image.tmdb.org/t/p/original${path}` : '';
+  }
+
+  goBack(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Añadimos la clase ANTES de navegar para que la animación inicie a tiempo
+      this.document.documentElement.classList.add('back-transition');
+      // La limpiamos después de que la animación termina (0.8s)
+      setTimeout(() => {
+        this.document.documentElement.classList.remove('back-transition');
+      }, 1000);
+    }
+    this.location.back();
   }
 }

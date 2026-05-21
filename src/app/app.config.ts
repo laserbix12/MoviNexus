@@ -12,7 +12,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
-      withViewTransitions(),
+      withViewTransitions({
+        onViewTransitionCreated: ({ transition, from, to }) => {
+          // Si es navegación hacia atrás, cancelamos el view transition
+          // y dejamos que nuestra animación CSS tome el control
+        }
+      }),
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
     ), 
     provideClientHydration(withEventReplay()),

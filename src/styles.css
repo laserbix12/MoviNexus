@@ -138,10 +138,36 @@ body {
 /* Hacemos que todas las transiciones sean un poco más lentas y fluidas para apreciarlas */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 5ms;
+  animation-duration: 0.4s;
 }
 
 ::view-transition-group(*) {
-  animation-duration: 5ms;
+  animation-duration: 0.4s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transición lenta al darle "devolver" / hacia atrás ("Efecto Abrir") */
+@keyframes fade-out-back {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.1); }
+}
+
+@keyframes open-up-back {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* SOLO cuando existe la clase .back-transition en el <html> */
+html.back-transition ::view-transition-old(root) {
+  animation: fade-out-back 0.8s ease-out both;
+  z-index: 1;
+}
+
+html.back-transition ::view-transition-new(root) {
+  animation: open-up-back 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 2;
+}
+
+html.back-transition ::view-transition-group(*) {
+  animation-duration: 0.8s;
 }
