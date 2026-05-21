@@ -175,3 +175,70 @@
   color: #e50914;
   font-weight: bold;
 }
+
+/* === Layout de Cabecera (Poster y Datos) === */
+.movie-header {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+.poster-img {
+  width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #1a1a1a;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.movie-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.movie-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.1rem;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.meta-item .icon {
+  color: var(--primary, #06b6d4);
+}
+
+@media (max-width: 768px) {
+  .movie-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .movie-meta {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .genres {
+    justify-content: center;
+  }
+
+  .content-wrapper {
+    padding-top: 35vh;
+  }
+}
