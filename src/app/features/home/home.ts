@@ -7,11 +7,12 @@ import { MovieCard } from '../../shared/components/movie-card/movie-card';
 import { Movie } from '../../core/models/movie.model';
 import { SkeletonHero } from '../../shared/components/skeleton-hero/skeleton-hero';
 import { SkeletonCard } from '../../shared/components/skeleton-card/skeleton-card';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Hero, MovieSlider, MovieCard, SkeletonHero, SkeletonCard], // Agregamos MovieSlider, SkeletonHero y SkeletonCard a las importaciones
+  imports: [CommonModule, Hero, MovieSlider, MovieCard, SkeletonHero, SkeletonCard, EmptyStateComponent], // Agregamos MovieSlider, SkeletonHero, SkeletonCard y EmptyStateComponent a las importaciones
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -23,6 +24,8 @@ export class Home implements OnInit, AfterViewInit {
   featuredMovie = signal<Movie | null>(null);
   trendingMovies = signal<Movie[]>([]);
   popularMovies = signal<Movie[]>([]);
+  hasError = signal(false);
+  errorMessage = signal('');
 
   @ViewChild('infiniteAnchor') infiniteAnchor!: ElementRef;
 
@@ -44,6 +47,10 @@ export class Home implements OnInit, AfterViewInit {
             this.trendingMovies.set(data.results);
             this.movieService.setTrendingMoviesCache(data.results);
           }
+        },
+        error: (err) => {
+          this.hasError.set(true);
+          this.errorMessage.set(err.message || 'No se pudieron cargar las tendencias.');
         }
       });
     }
@@ -57,6 +64,10 @@ export class Home implements OnInit, AfterViewInit {
         next: (data) => {
           this.popularMovies.set(data.results);
           this.movieService.setPopularMoviesCache(data.results);
+        },
+        error: (err) => {
+          this.hasError.set(true);
+          this.errorMessage.set(err.message || 'No se pudieron cargar las películas populares.');
         }
       });
     }
