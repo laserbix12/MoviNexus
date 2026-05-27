@@ -12,5 +12,9 @@ export const routes: Routes = [
   {
     path: 'favorites',
     loadComponent: () => import('./features/favorites/favorites').then(m => m.Favorites)
+  },
+  {
+    path: '**', // Atrapa TODO lo que no exista
+    loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFound)
   }
 ];
