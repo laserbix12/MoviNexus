@@ -45,8 +45,7 @@
     <!-- Descripción (Overview) -->
     <p class="overview">{{ data.details.overview }}</p>
 
-    <!-- Botón de volver -->
-    <button class="back-button" (click)="goBack()">← Volver</button>
+
 
     <!-- TRAILER SECTION (Deffered) -->
     @defer (on viewport) {
@@ -80,6 +79,31 @@
     } @loading {
     <div class="defer-spinner">Cargando elenco...</div>
     }
+
+    <!-- Comentarios Section -->
+    <section class="comments-container">
+      @defer (on viewport) {
+        <!-- Se carga automáticamente cuando este espacio entra en el viewport del navegador -->
+        <app-movie-comments [movieId]="data.details.id"></app-movie-comments>
+      } @placeholder {
+        <!-- Se muestra esto antes de cargar el componente -->
+        <div class="comments-loading-placeholder">
+          <p>📜 Scroll hacia abajo para ver y dejar comentarios...</p>
+        </div>
+      } @loading {
+        <div class="defer-spinner">Cargando sección de comentarios...</div>
+      }
+    </section>
+
+    <!-- Acciones (Volver y Favoritos) -->
+    <div class="actions-footer">
+      <button class="action-btn" (click)="goBack()">← Volver</button>
+      <button class="action-btn favorite-btn" 
+              (click)="toggleFavorite(data.details)">
+        <span class="heart-icon" [class.active]="favoritesService.isFavorite(data.details.id)">❤</span> 
+        {{ favoritesService.isFavorite(data.details.id) ? 'Quitar de Favoritos' : 'Añadir a Favoritos' }}
+      </button>
+    </div>
 
   </div>
 </div>

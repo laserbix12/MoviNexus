@@ -1,9 +1,11 @@
 import { Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
+import { FavoritesService } from '../../core/services/favorites.service';
 import { Movie } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
 import { MovieTrailerComponent } from './components/movie-trailer/movie-trailer';
+import { MovieCommentsComponent } from './components/movie-comments/movie-comments';
 import { Observable, forkJoin } from 'rxjs';
 import { CreditsResponse } from '../../core/models/cast.model';
 import { Location } from '@angular/common';
@@ -11,12 +13,13 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, CastCard, MovieTrailerComponent], // No olvides importar CastCard y MovieTrailerComponent
+  imports: [CommonModule, CastCard, MovieTrailerComponent, MovieCommentsComponent],
   templateUrl: './movie-details.html',
   styleUrl: './movie-details.css'
 })
 export class MovieDetails implements OnInit {
   private movieService = inject(MovieService);
+  public favoritesService = inject(FavoritesService);
   private location = inject(Location);
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
@@ -49,5 +52,9 @@ export class MovieDetails implements OnInit {
       }, 1000);
     }
     this.location.back();
+  }
+
+  toggleFavorite(movie: Movie): void {
+    this.favoritesService.toggleFavorite(movie);
   }
 }
