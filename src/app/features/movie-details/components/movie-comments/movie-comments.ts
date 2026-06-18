@@ -66,22 +66,51 @@ export class MovieCommentsComponent implements OnInit {
     if (!this.authorName.trim() || !this.commentText.trim()) return;
     this.submitting = true;
 
-    this.commentService.addComment(this.itemId, this.authorName, this.commentText, this.selectedRating).subscribe({
-      next: (newComment) => {
-        this.comments.unshift(newComment); // Añadir al inicio de la lista
-        this.submitting = false;
-        this.showForm = false;
-        this.successMessage = '¡Comentario publicado exitosamente!';
-        this.authorName = '';
-        this.commentText = '';
-        this.selectedRating = 5;
+    // 1. Crear comentario optimista (fake temporal)
+    const optimisticComment: Comment = {
+      id: Date.now(), // ID temporal
+      appId: '', // No lo necesitamos para la UI
+      itemId: this.itemId,
+      author: this.authorName,
+      text: this.commentText,
+      rating: this.selectedRating,
+      createdAt: new Date().toISOString()
+    };
 
-        // Ocultar el banner de éxito después de unos segundos
-        setTimeout(() => this.successMessage = '', 3000);
+    // 2. Actualizar UI de inmediato (Optimistic Update)
+    this.comments.unshift(optimisticComment);
+    
+    // Guardar valores temporalmente por si falla la petición
+    const tempAuthor = this.authorName;
+    const tempText = this.commentText;
+    const tempRating = this.selectedRating;
+
+    // Resetear formulario al instante para dar sensación de rapidez
+    this.showForm = false;
+    this.successMessage = '¡Comentario publicado exitosamente!';
+    this.authorName = '';
+    this.commentText = '';
+    this.selectedRating = 5;
+    setTimeout(() => this.successMessage = '', 3000);
+
+    // 3. Enviar a la API en segundo plano
+    this.commentService.addComment(this.itemId, tempAuthor, tempText, tempRating).subscribe({
+      next: (realComment) => {
+        // Reemplazar el comentario temporal con el real (que tiene el ID definitivo de la base de datos)
+        const index = this.comments.findIndex(c => c.id === optimisticComment.id);
+        if (index !== -1) {
+          this.comments[index] = realComment;
+        }
+        this.submitting = false;
       },
       error: (err) => {
-        this.error = 'No se pudo publicar el comentario.';
+        // Si falla la API, revertimos el comentario optimista
+        this.comments = this.comments.filter(c => c.id !== optimisticComment.id);
+        this.error = 'Ocurrió un error al publicar el comentario en el servidor.';
         this.submitting = false;
+        
+        // Ocultar error después de unos segundos
+        setTimeout(() => this.error = '', 5000);
       }
     });
   }
