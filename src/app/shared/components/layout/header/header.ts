@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MovieService } from '../../../../core/services/movie.service';
 import { Movie } from '../../../../core/models/movie.model';
@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './header.css',
 })
 export class Header {
   private movieService = inject(MovieService);
@@ -42,7 +43,7 @@ export class Header {
             this.searchResults.set(response.results.slice(0, 5));
             this.isSearching.set(false);
           },
-          error: () => this.isSearching.set(false)
+          error: () => this.isSearching.set(false),
         });
       }, 300);
 

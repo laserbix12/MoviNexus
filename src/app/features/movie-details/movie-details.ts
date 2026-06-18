@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnInit,
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
 import { FavoritesService } from '../../core/services/favorites.service';
@@ -15,7 +22,8 @@ import { Location } from '@angular/common';
   standalone: true,
   imports: [CommonModule, CastCard, MovieTrailerComponent, MovieCommentsComponent],
   templateUrl: './movie-details.html',
-  styleUrl: './movie-details.css'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './movie-details.css',
 })
 export class MovieDetails implements OnInit {
   private movieService = inject(MovieService);
@@ -33,7 +41,7 @@ export class MovieDetails implements OnInit {
       // forkJoin dispara ambas peticiones al mismo tiempo y crea un objeto con los dos resultados
       this.movieData$ = forkJoin({
         details: this.movieService.getMovieById(this.id),
-        credits: this.movieService.getMovieCredits(this.id)
+        credits: this.movieService.getMovieCredits(this.id),
       });
     }
   }

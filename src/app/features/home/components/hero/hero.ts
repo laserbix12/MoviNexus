@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Movie } from '../../../../core/models/movie.model';
 
@@ -7,7 +7,8 @@ import { Movie } from '../../../../core/models/movie.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './hero.html',
-  styleUrl: './hero.css'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './hero.css',
 })
 export class Hero {
   // ¡Recibimos la película desde el padre (Home)!
@@ -16,7 +17,7 @@ export class Hero {
 
   // Getter profesional para construir la URL de la imagen de fondo de alta calidad
   get backdropUrl() {
-    return this.movie.backdrop_path 
+    return this.movie.backdrop_path
       ? `https://image.tmdb.org/t/p/original${this.movie.backdrop_path}`
       : ''; // URL de respaldo si es necesario
   }

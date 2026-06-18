@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { MovieCard } from '../../shared/components/movie-card/movie-card';
@@ -9,7 +9,8 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
   standalone: true,
   imports: [CommonModule, MovieCard, EmptyStateComponent],
   templateUrl: './favorites.html',
-  styleUrl: './favorites.css'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './favorites.css',
 })
 export class Favorites {
   // Inyectamos el servicio para acceder a los favoritos

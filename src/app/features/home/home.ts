@@ -1,4 +1,14 @@
-import { Component, inject, OnInit, signal, AfterViewInit, ElementRef, ViewChild, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
 import { Hero } from './components/hero/hero';
@@ -12,8 +22,17 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Hero, MovieSlider, MovieCard, SkeletonHero, SkeletonCard, EmptyStateComponent], // Agregamos MovieSlider, SkeletonHero, SkeletonCard y EmptyStateComponent a las importaciones
+  imports: [
+    CommonModule,
+    Hero,
+    MovieSlider,
+    MovieCard,
+    SkeletonHero,
+    SkeletonCard,
+    EmptyStateComponent,
+  ], // Agregamos MovieSlider, SkeletonHero, SkeletonCard y EmptyStateComponent a las importaciones
   templateUrl: './home.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.css',
 })
 export class Home implements OnInit, AfterViewInit {
@@ -51,7 +70,7 @@ export class Home implements OnInit, AfterViewInit {
         error: (err) => {
           this.hasError.set(true);
           this.errorMessage.set(err.message || 'No se pudieron cargar las tendencias.');
-        }
+        },
       });
     }
 
@@ -68,7 +87,7 @@ export class Home implements OnInit, AfterViewInit {
         error: (err) => {
           this.hasError.set(true);
           this.errorMessage.set(err.message || 'No se pudieron cargar las películas populares.');
-        }
+        },
       });
     }
 
@@ -88,12 +107,15 @@ export class Home implements OnInit, AfterViewInit {
   }
 
   private initInfiniteScroll(): void {
-    const observer = new IntersectionObserver((entries) => {
-      // 4. Si el ancla entra en el campo de visión y no estamos cargando...
-      if (entries[0].isIntersecting && !this.isFetchingNextPage()) {
-        this.loadMoreMovies();
-      }
-    }, { rootMargin: '200px' }); // 'rootMargin' permite cargar 200px antes de llegar al final
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // 4. Si el ancla entra en el campo de visión y no estamos cargando...
+        if (entries[0].isIntersecting && !this.isFetchingNextPage()) {
+          this.loadMoreMovies();
+        }
+      },
+      { rootMargin: '200px' },
+    ); // 'rootMargin' permite cargar 200px antes de llegar al final
 
     if (this.infiniteAnchor) {
       observer.observe(this.infiniteAnchor.nativeElement);
@@ -114,7 +136,7 @@ export class Home implements OnInit, AfterViewInit {
         this.movieService.setCatalogCurrentPageCache(nextPage);
 
         this.isFetchingNextPage.set(false);
-      }
+      },
     });
   }
 }
