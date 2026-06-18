@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentService } from '../../../../core/services/comment.service';
@@ -13,6 +13,7 @@ import { Comment } from '../../../../core/models/comment.model';
 })
 export class MovieCommentsComponent implements OnInit {
   private commentService = inject(CommentService);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() movieId!: number; // Recibe el ID desde la pantalla de detalles
 
@@ -78,7 +79,8 @@ export class MovieCommentsComponent implements OnInit {
     };
 
     // 2. Actualizar UI de inmediato (Optimistic Update)
-    this.comments.unshift(optimisticComment);
+    // Usamos spread operator para crear una nueva referencia del arreglo, esto ayuda a la detección de cambios
+    this.comments = [optimisticComment, ...this.comments];
     
     // Guardar valores temporalmente por si falla la petición
     const tempAuthor = this.authorName;
@@ -91,26 +93,41 @@ export class MovieCommentsComponent implements OnInit {
     this.authorName = '';
     this.commentText = '';
     this.selectedRating = 5;
-    setTimeout(() => this.successMessage = '', 3000);
+    
+    // Forzar la detección de cambios inmediatamente como solicitaste
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
 
     // 3. Enviar a la API en segundo plano
     this.commentService.addComment(this.itemId, tempAuthor, tempText, tempRating).subscribe({
       next: (realComment) => {
-        // Reemplazar el comentario temporal con el real (que tiene el ID definitivo de la base de datos)
+        // Reemplazar el comentario temporal con el real
         const index = this.comments.findIndex(c => c.id === optimisticComment.id);
         if (index !== -1) {
-          this.comments[index] = realComment;
+          // Actualizamos la referencia nuevamente para que la UI se entere
+          const updatedComments = [...this.comments];
+          updatedComments[index] = realComment;
+          this.comments = updatedComments;
         }
         this.submitting = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         // Si falla la API, revertimos el comentario optimista
         this.comments = this.comments.filter(c => c.id !== optimisticComment.id);
         this.error = 'Ocurrió un error al publicar el comentario en el servidor.';
         this.submitting = false;
+        this.cdr.detectChanges();
         
         // Ocultar error después de unos segundos
-        setTimeout(() => this.error = '', 5000);
+        setTimeout(() => {
+          this.error = '';
+          this.cdr.detectChanges();
+        }, 5000);
       }
     });
   }
