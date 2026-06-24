@@ -3,7 +3,7 @@
 // La GEMINI_API_KEY nunca llega al cliente; solo existe en el servidor.
 
 const GEMINI_API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-lite:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent';
 
 const SYSTEM_INSTRUCTION = `Eres Nexus AI, el asistente cinematográfico de MovieNexus.
 Tu personalidad es la de un crítico de cine apasionado, culto y amigable.
