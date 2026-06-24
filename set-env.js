@@ -18,6 +18,7 @@ const envConfigFile = `export const environment = {
   baseUrl: 'https://api.themoviedb.org/3',
   apiKey: '${process.env.API_KEY || ""}',
   tmdbApiKey: '${process.env.API_KEY || ""}',
+  geminiApiKey: '',
   imgPath: 'https://image.tmdb.org/t/p/w500'
 };
 `;

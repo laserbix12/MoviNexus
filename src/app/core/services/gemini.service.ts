@@ -1,8 +1,9 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { MovieService } from './movie.service';
 import { Movie } from '../models/movie.model';
+import { environment } from '../../../environments/environment';
 
 // ─── Tipos del chat ────────────────────────────────────────────────────────────
 
@@ -75,13 +76,67 @@ export class GeminiService {
       .map(m => ({ role: m.role, content: m.content }));
 
     try {
-      // 3. Llamar al proxy backend
-      const geminiResp = await firstValueFrom(
-        this.http.post<GeminiResponse>('/api/chat', {
-          history,
-          message: userText.trim(),
-        })
-      );
+      let geminiResp: GeminiResponse;
+
+      // 3. En desarrollo local (ng serve) saltamos el proxy y llamamos directo
+      if (isDevMode()) {
+        const apiKey = environment.geminiApiKey;
+        if (!apiKey) throw new Error('API Key faltante en environment.development.ts');
+
+        const SYSTEM_INSTRUCTION = `Eres Nexus AI, el asistente cinematográfico de MovieNexus.
+Tu personalidad es la de un crítico de cine apasionado, culto y amigable.
+Conoces el cine mundial a profundidad: clásicos, blockbusters, cine de autor, series y documentales.
+
+REGLAS ESTRICTAS:
+1. Siempre responde en el mismo idioma que el usuario te escriba (español o inglés).
+2. Cuando menciones o recomiendes películas, SIEMPRE incluye sus títulos exactos en el campo "movies".
+3. Tu respuesta DEBE ser un JSON válido con exactamente este formato:
+{
+  "text": "Tu respuesta en texto con formato Markdown (usa **negritas**, *cursivas*, listas con - )",
+  "movies": ["Título Exacto 1", "Título Exacto 2"]
+}
+4. Si no mencionas películas, devuelve "movies": [].
+5. El campo "text" puede contener Markdown pero NO etiquetas HTML.
+6. Nunca salgas del rol cinematográfico.
+7. Limita tus recomendaciones a máximo 5 películas por respuesta para no saturar al usuario.`;
+
+        const contents = [
+          ...history.map((msg) => ({
+            role: msg.role === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.content }],
+          })),
+          { role: 'user', parts: [{ text: userText.trim() }] }
+        ];
+
+        const payload = {
+          system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+          contents,
+          generationConfig: { temperature: 0.8, topP: 0.95, maxOutputTokens: 1500, responseMimeType: 'application/json' },
+        };
+
+        const res = await firstValueFrom(
+          this.http.post<any>(
+            `/gemini-api/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            payload
+          )
+        );
+
+        const rawText = res?.candidates?.[0]?.content?.parts?.[0]?.text;
+        try {
+          geminiResp = JSON.parse(rawText || '{}');
+          if (!geminiResp.text) geminiResp = { text: rawText, movies: [] };
+        } catch {
+          geminiResp = { text: rawText || '', movies: [] };
+        }
+      } else {
+        // En producción (Vercel), usamos el proxy seguro /api/chat
+        geminiResp = await firstValueFrom(
+          this.http.post<GeminiResponse>('/api/chat', {
+            history,
+            message: userText.trim(),
+          })
+        );
+      }
 
       // 4. Buscar cada película mencionada en TMDB
       const movies = await this.fetchMoviesFromTmdb(geminiResp.movies ?? []);
@@ -95,16 +150,19 @@ export class GeminiService {
       };
       this.messages.update(msgs => [...msgs, assistantMessage]);
 
-    } catch (err) {
-      console.error('[GeminiService] Error al contactar /api/chat:', err);
+    } catch (err: any) {
+      console.error('[GeminiService] Error de API:', err);
       this.hasError.set(true);
+      
+      const errorDetail = err?.error?.error?.message || err?.message || 'Error desconocido';
+
       this.messages.update(msgs => [
         ...msgs,
         {
           role: 'assistant',
           content:
-            '⚠️ Hubo un problema al conectar con Nexus AI. ' +
-            'Verifica que la API Key esté configurada en Vercel y vuelve a intentarlo.',
+            `⚠️ **Error:** ${errorDetail}\n\n` +
+            '💡 **Consejo:** Si acabas de poner la API Key en el `.env`, necesitas **apagar y volver a prender el servidor** (Ctrl+C en la terminal y luego `npm start`). Además, asegúrate de que tu clave comience con `AIza`.',
           movies: [],
           timestamp: new Date(),
         },
