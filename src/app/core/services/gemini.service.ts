@@ -117,7 +117,7 @@ REGLAS ESTRICTAS:
 
         const res = await firstValueFrom(
           this.http.post<any>(
-            `/gemini-api/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+            `/gemini-api/v1beta/models/gemini-3.1-pro:generateContent?key=${apiKey}`,
             payload
           )
         );
