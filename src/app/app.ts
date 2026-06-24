@@ -1,13 +1,14 @@
 import { Component, signal, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { Header } from './shared/components/layout/header/header';
+import { ChatWidget } from './shared/components/chat-widget/chat-widget';
 import { Footer } from './shared/components/layout/footer/footer';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, Footer, ChatWidget],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.css',
