@@ -12,6 +12,7 @@ export interface ChatMessage {
   content: string;               // Texto con Markdown
   movies?: Movie[];              // Películas encontradas en TMDB para el carrusel
   timestamp: Date;
+  isError?: boolean;             // Flag para identificar mensajes de error
 }
 
 interface GeminiResponse {
@@ -160,11 +161,10 @@ REGLAS ESTRICTAS:
         ...msgs,
         {
           role: 'assistant',
-          content:
-            `⚠️ **Error:** ${errorDetail}\n\n` +
-            '💡 **Consejo:** Si acabas de poner la API Key en el `.env`, necesitas **apagar y volver a prender el servidor** (Ctrl+C en la terminal y luego `npm start`). Además, asegúrate de que tu clave comience con `AIza`.',
+          content: '❌ Ocurrió un error al procesar tu mensaje. Por favor, inténtalo de nuevo.',
           movies: [],
           timestamp: new Date(),
+          isError: true
         },
       ]);
     } finally {

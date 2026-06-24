@@ -74,7 +74,7 @@
   <!-- Zona de mensajes -->
   <div class="chat-messages" #messagesContainer>
     @for (msg of gemini.messages(); track trackByIndex($index, msg)) {
-      <div class="chat-message" [class.chat-message--user]="msg.role === 'user'" [class.chat-message--assistant]="msg.role === 'assistant'">
+      <div class="chat-message" [class.chat-message--user]="msg.role === 'user'" [class.chat-message--assistant]="msg.role === 'assistant'" [class.is-error]="msg.isError">
 
         <!-- Avatar del asistente -->
         @if (msg.role === 'assistant') {
@@ -181,6 +181,14 @@
           </button>
         }
       </div>
+    </div>
+  }
+
+  <!-- Error Toast -->
+  @if (gemini.hasError()) {
+    <div class="error-toast">
+      <span class="error-icon">❗</span>
+      <span class="error-text">Error al conectar con el asistente. Verifica tu conexión.</span>
     </div>
   }
 
