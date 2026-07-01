@@ -7,12 +7,15 @@ import {
   AfterViewChecked,
   ChangeDetectionStrategy,
   OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { GeminiService, ChatMessage } from '../../../core/services/gemini.service';
 import { Movie } from '../../../core/models/movie.model';
+
+declare var window: any;
 
 // ─── Función local de Markdown ─────────────────────────────────────────────────
 // Evitamos librerías externas para no afectar el bundle size ni el build.
@@ -48,9 +51,16 @@ function parseMarkdown(text: string): string {
 })
 export class ChatWidget implements AfterViewChecked, OnInit {
   protected gemini   = inject(GeminiService);
+  protected cdr      = inject(ChangeDetectorRef);
 
   /** Controla si el panel está abierto */
   isOpen             = signal(false);
+
+  /** Controla si el micrófono está escuchando */
+  isListening        = signal(false);
+  hasRecognition     = signal(false);
+  private recognition: any = null;
+  private speechTimeout: any;
 
   /** Texto del input del usuario */
   inputText          = '';
@@ -70,7 +80,60 @@ export class ChatWidget implements AfterViewChecked, OnInit {
 
   private shouldScroll = false;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initSpeechRecognition();
+  }
+
+  private initSpeechRecognition(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      this.recognition = new SpeechRecognition();
+      this.hasRecognition.set(true);
+      this.recognition.lang = 'es-ES'; // Español
+      this.recognition.interimResults = true;
+      this.recognition.continuous = false;
+
+      this.recognition.onstart = () => {
+        this.isListening.set(true);
+      };
+
+      this.recognition.onresult = (event: any) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (finalTranscript) {
+          // Agregar el texto final al input actual
+          const currentText = this.inputText.trim();
+          this.inputText = currentText ? `${currentText} ${finalTranscript}` : finalTranscript;
+          this.cdr.detectChanges();
+
+          // Auto-envío inteligente tras 600ms
+          clearTimeout(this.speechTimeout);
+          this.speechTimeout = setTimeout(() => {
+            this.onSubmit();
+          }, 600);
+        }
+      };
+
+      this.recognition.onerror = (event: any) => {
+        console.error('Error de reconocimiento de voz', event.error);
+        this.isListening.set(false);
+      };
+
+      this.recognition.onend = () => {
+        this.isListening.set(false);
+      };
+    } else {
+      console.warn('La API de reconocimiento de voz no está soportada en este navegador.');
+    }
+  }
 
   ngAfterViewChecked(): void {
     if (this.shouldScroll) {
@@ -80,6 +143,16 @@ export class ChatWidget implements AfterViewChecked, OnInit {
   }
 
   // ── Acciones ──────────────────────────────────────────────────────────────
+
+  toggleListening(): void {
+    if (!this.recognition) return;
+
+    if (this.isListening()) {
+      this.recognition.stop();
+    } else {
+      this.recognition.start();
+    }
+  }
 
   togglePanel(): void {
     this.isOpen.update(v => !v);

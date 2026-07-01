@@ -4,50 +4,39 @@
      ════════════════════════════════════════════════════════ -->
 
 <!-- ── Botón FAB (Floating Action Button) ─────────────────── -->
-<button
-  id="nexus-fab-btn"
-  class="chat-fab"
-  [class.is-open]="isOpen()"
-  (click)="togglePanel()"
-  aria-label="Abrir Nexus AI Chat"
-  title="Nexus AI — Asistente Cinematográfico"
->
+<button id="nexus-fab-btn" class="chat-fab" [class.is-open]="isOpen()" (click)="togglePanel()"
+  aria-label="Abrir Nexus AI Chat" title="Nexus AI — Asistente Cinematográfico">
   <!-- Ícono de chat (cerrado) -->
   <svg class="fab-icon fab-icon--chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    <circle cx="9" cy="10" r="0.5" fill="currentColor"/>
-    <circle cx="12" cy="10" r="0.5" fill="currentColor"/>
-    <circle cx="15" cy="10" r="0.5" fill="currentColor"/>
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    <circle cx="9" cy="10" r="0.5" fill="currentColor" />
+    <circle cx="12" cy="10" r="0.5" fill="currentColor" />
+    <circle cx="15" cy="10" r="0.5" fill="currentColor" />
   </svg>
 
   <!-- Ícono de cerrar (abierto) -->
   <svg class="fab-icon fab-icon--close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 
   <!-- Badge con número de mensajes -->
   @if (!isOpen() && gemini.messageCount() > 1) {
-    <span class="fab-badge">{{ gemini.messageCount() }}</span>
+  <span class="fab-badge">{{ gemini.messageCount() }}</span>
   }
 </button>
 
 <!-- ── Panel Principal ────────────────────────────────────── -->
-<div
-  id="nexus-chat-panel"
-  class="chat-panel"
-  [class.is-visible]="isOpen()"
-  role="dialog"
-  aria-label="Nexus AI Chat"
->
+<div id="nexus-chat-panel" class="chat-panel" [class.is-visible]="isOpen()" role="dialog" aria-label="Nexus AI Chat">
   <!-- Header del panel -->
   <div class="chat-header">
     <div class="chat-header__identity">
       <div class="chat-avatar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 2a3 3 0 0 1 3 3v1h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3V5a3 3 0 0 1 3-3z"/>
-          <circle cx="9" cy="13" r="1.5"/>
-          <circle cx="15" cy="13" r="1.5"/>
+          <path
+            d="M12 2a3 3 0 0 1 3 3v1h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3V5a3 3 0 0 1 3-3z" />
+          <circle cx="9" cy="13" r="1.5" />
+          <circle cx="15" cy="13" r="1.5" />
         </svg>
       </div>
       <div class="chat-header__text">
@@ -57,15 +46,10 @@
     </div>
     <div class="chat-header__actions">
       <!-- Botón limpiar -->
-      <button
-        class="chat-icon-btn"
-        (click)="clearChat()"
-        title="Nueva conversación"
-        aria-label="Limpiar conversación"
-      >
+      <button class="chat-icon-btn" (click)="clearChat()" title="Nueva conversación" aria-label="Limpiar conversación">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="1 4 1 10 7 10"/>
-          <path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+          <polyline points="1 4 1 10 7 10" />
+          <path d="M3.51 15a9 9 0 1 0 .49-3.51" />
         </svg>
       </button>
     </div>
@@ -74,154 +58,140 @@
   <!-- Zona de mensajes -->
   <div class="chat-messages" #messagesContainer>
     @for (msg of gemini.messages(); track trackByIndex($index, msg)) {
-      <div class="chat-message" [class.chat-message--user]="msg.role === 'user'" [class.chat-message--assistant]="msg.role === 'assistant'" [class.is-error]="msg.isError">
+    <div class="chat-message" [class.chat-message--user]="msg.role === 'user'"
+      [class.chat-message--assistant]="msg.role === 'assistant'" [class.is-error]="msg.isError">
 
-        <!-- Avatar del asistente -->
-        @if (msg.role === 'assistant') {
-          <div class="msg-avatar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="2" y="7" width="20" height="14" rx="3"/>
-              <path d="M8 7V5a4 4 0 0 1 8 0v2"/>
-              <circle cx="9" cy="14" r="1"/>
-              <circle cx="15" cy="14" r="1"/>
+      <!-- Avatar del asistente -->
+      @if (msg.role === 'assistant') {
+      <div class="msg-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="7" width="20" height="14" rx="3" />
+          <path d="M8 7V5a4 4 0 0 1 8 0v2" />
+          <circle cx="9" cy="14" r="1" />
+          <circle cx="15" cy="14" r="1" />
+        </svg>
+      </div>
+      }
+
+      <div class="msg-body">
+        <!-- Burbuja de texto -->
+        <div class="msg-bubble" [innerHTML]="renderMarkdown(msg.content)"></div>
+
+        <!-- Carrusel de películas -->
+        @if (msg.movies && msg.movies.length > 0) {
+        <div class="movie-carousel">
+          <p class="carousel-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+              <line x1="7" y1="2" x2="7" y2="22" />
+              <line x1="17" y1="2" x2="17" y2="22" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <line x1="2" y1="7" x2="7" y2="7" />
+              <line x1="2" y1="17" x2="7" y2="17" />
+              <line x1="17" y1="7" x2="22" y2="7" />
+              <line x1="17" y1="17" x2="22" y2="17" />
             </svg>
-          </div>
-        }
-
-        <div class="msg-body">
-          <!-- Burbuja de texto -->
-          <div class="msg-bubble" [innerHTML]="renderMarkdown(msg.content)"></div>
-
-          <!-- Carrusel de películas -->
-          @if (msg.movies && msg.movies.length > 0) {
-            <div class="movie-carousel">
-              <p class="carousel-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
-                  <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
-                  <line x1="7" y1="2" x2="7" y2="22"/>
-                  <line x1="17" y1="2" x2="17" y2="22"/>
-                  <line x1="2" y1="12" x2="22" y2="12"/>
-                  <line x1="2" y1="7" x2="7" y2="7"/>
-                  <line x1="2" y1="17" x2="7" y2="17"/>
-                  <line x1="17" y1="7" x2="22" y2="7"/>
-                  <line x1="17" y1="17" x2="22" y2="17"/>
-                </svg>
-                Películas en TMDB
-              </p>
-              <div class="carousel-track">
-                @for (movie of msg.movies; track movie.id) {
-                  <a
-                    class="carousel-card"
-                    [routerLink]="['/movie', movie.id]"
-                    (click)="togglePanel()"
-                    [title]="movie.title"
-                  >
-                    <img
-                      class="carousel-poster"
-                      [src]="getPosterUrl(movie)"
-                      [alt]="movie.title"
-                      loading="lazy"
-                    />
-                    <div class="carousel-info">
-                      <span class="carousel-movie-title">{{ movie.title }}</span>
-                      @if (movie.vote_average) {
-                        <span class="carousel-rating">
-                          ⭐ {{ movie.vote_average | number: '1.1-1' }}
-                        </span>
-                      }
-                    </div>
-                  </a>
+            Películas en TMDB
+          </p>
+          <div class="carousel-track">
+            @for (movie of msg.movies; track movie.id) {
+            <a class="carousel-card" [routerLink]="['/movie', movie.id]" (click)="togglePanel()" [title]="movie.title">
+              <img class="carousel-poster" [src]="getPosterUrl(movie)" [alt]="movie.title" loading="lazy" />
+              <div class="carousel-info">
+                <span class="carousel-movie-title">{{ movie.title }}</span>
+                @if (movie.vote_average) {
+                <span class="carousel-rating">
+                  ⭐ {{ movie.vote_average | number: '1.1-1' }}
+                </span>
                 }
               </div>
-            </div>
-          }
-
-          <!-- Timestamp -->
-          <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
+            </a>
+            }
+          </div>
         </div>
+        }
+
+        <!-- Timestamp -->
+        <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
       </div>
+    </div>
     }
 
     <!-- Typing indicator -->
     @if (gemini.isLoading()) {
-      <div class="chat-message chat-message--assistant">
-        <div class="msg-avatar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="7" width="20" height="14" rx="3"/>
-            <path d="M8 7V5a4 4 0 0 1 8 0v2"/>
-            <circle cx="9" cy="14" r="1"/>
-            <circle cx="15" cy="14" r="1"/>
-          </svg>
-        </div>
-        <div class="msg-body">
-          <div class="msg-bubble typing-indicator">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+    <div class="chat-message chat-message--assistant">
+      <div class="msg-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="7" width="20" height="14" rx="3" />
+          <path d="M8 7V5a4 4 0 0 1 8 0v2" />
+          <circle cx="9" cy="14" r="1" />
+          <circle cx="15" cy="14" r="1" />
+        </svg>
+      </div>
+      <div class="msg-body">
+        <div class="msg-bubble typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
+    </div>
     }
   </div>
 
   <!-- ── Preguntas Sugeridas ─────────────────────────────── -->
   @if (showSuggestions) {
-    <div class="suggestions-area">
-      <p class="suggestions-label">💡 Prueba preguntando...</p>
-      <div class="suggestions-grid">
-        @for (q of suggestedQuestions; track q.text) {
-          <button
-            class="suggestion-chip"
-            (click)="sendSuggestion(q.text)"
-            [disabled]="gemini.isLoading()"
-            [title]="q.text"
-          >
-            <span class="chip-emoji">{{ q.emoji }}</span>
-            <span class="chip-text">{{ q.text }}</span>
-          </button>
-        }
-      </div>
+  <div class="suggestions-area">
+    <p class="suggestions-label">💡 Prueba preguntando...</p>
+    <div class="suggestions-grid">
+      @for (q of suggestedQuestions; track q.text) {
+      <button class="suggestion-chip" (click)="sendSuggestion(q.text)" [disabled]="gemini.isLoading()" [title]="q.text">
+        <span class="chip-emoji">{{ q.emoji }}</span>
+        <span class="chip-text">{{ q.text }}</span>
+      </button>
+      }
     </div>
+  </div>
   }
 
   <!-- Error Toast -->
   @if (gemini.hasError()) {
-    <div class="error-toast">
-      <span class="error-icon">❗</span>
-      <span class="error-text">Error al conectar con el asistente. Verifica tu conexión.</span>
-    </div>
+  <div class="error-toast">
+    <span class="error-icon">❗</span>
+    <span class="error-text">Error al conectar con el asistente. Verifica tu conexión.</span>
+  </div>
   }
 
   <!-- Input area -->
   <div class="chat-input-area">
     <div class="chat-input-wrapper" [class.is-loading]="gemini.isLoading()">
-      <textarea
-        id="nexus-chat-input"
-        class="chat-input"
-        [(ngModel)]="inputText"
-        (keydown)="onKeyDown($event)"
-        placeholder="Pregúntame sobre cine..."
-        rows="1"
-        [disabled]="gemini.isLoading()"
-        aria-label="Escribe tu mensaje"
-      ></textarea>
-      <button
-        id="nexus-send-btn"
-        class="send-btn"
-        (click)="onSubmit()"
-        [disabled]="!inputText.trim() || gemini.isLoading()"
-        aria-label="Enviar mensaje"
-        title="Enviar (Enter)"
-      >
+      <textarea id="nexus-chat-input" class="chat-input" [(ngModel)]="inputText" (keydown)="onKeyDown($event)"
+        placeholder="Pregúntame sobre cine..." rows="1" [disabled]="gemini.isLoading()"
+        aria-label="Escribe tu mensaje"></textarea>
+      <!-- Botón de micrófono -->
+      @if (hasRecognition()) {
+      <button type="button" class="mic-btn" [class.is-listening]="isListening()" (click)="toggleListening()"
+        [title]="isListening() ? 'Detener grabación' : 'Hablar por micrófono'" aria-label="Reconocimiento de voz">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        </svg>
+      </button>
+      }
+
+      <button id="nexus-send-btn" class="send-btn" (click)="onSubmit()"
+        [disabled]="!inputText.trim() || gemini.isLoading()" aria-label="Enviar mensaje" title="Enviar (Enter)">
         @if (gemini.isLoading()) {
-          <svg class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-          </svg>
+        <svg class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
         } @else {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
         }
       </button>
     </div>
