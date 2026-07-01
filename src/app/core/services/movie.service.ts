@@ -110,6 +110,11 @@ export class MovieService {
   getWatchProviders(id: string | number) {
     return this.http.get<WatchProvidersResponse>(
       `${this.apiUrl}/movie/${id}/watch/providers`
+    ).pipe(
+      catchError((error) => {
+        console.error('Error fetching watch providers:', error);
+        return of({ id: Number(id), results: {} } as WatchProvidersResponse);
+      })
     );
   }
 }

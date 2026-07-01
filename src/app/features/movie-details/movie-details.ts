@@ -58,7 +58,16 @@ export class MovieDetails implements OnInit {
           }
           
           // Buscar proveedores para la región del usuario, sino cae en US, o nulo.
-          const countryData = res.providersRaw.results[region] || res.providersRaw.results['US'] || null;
+          let countryData = null;
+          if (res.providersRaw && res.providersRaw.results) {
+            countryData = res.providersRaw.results[region] || res.providersRaw.results['US'] || null;
+            
+            // Si la región seleccionada no tiene datos, buscar la primera disponible
+            if (!countryData && Object.keys(res.providersRaw.results).length > 0) {
+              const firstAvailable = Object.keys(res.providersRaw.results)[0];
+              countryData = res.providersRaw.results[firstAvailable];
+            }
+          }
 
           return {
             details: res.details,
