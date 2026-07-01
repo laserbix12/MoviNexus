@@ -45,7 +45,54 @@
     <!-- Descripción (Overview) -->
     <p class="overview">{{ data.details.overview }}</p>
 
+    <!-- Proveedores de Streaming -->
+    @if (data.providers) {
+    <section class="providers-section">
+      <h2>¿DÓNDE VER?</h2>
+      <div class="providers-container">
+        
+        @if (data.providers.flatrate && data.providers.flatrate.length > 0) {
+        <div class="provider-group">
+          <h3>SUSCRIPCIÓN</h3>
+          <div class="provider-list">
+            @for (provider of data.providers.flatrate; track provider.provider_id) {
+            <div class="provider-card" [title]="provider.provider_name">
+              <img [src]="'https://image.tmdb.org/t/p/w154' + provider.logo_path" [alt]="provider.provider_name" class="provider-logo">
+            </div>
+            }
+          </div>
+        </div>
+        }
 
+        @if (data.providers.rent && data.providers.rent.length > 0) {
+        <div class="provider-group">
+          <h3>RENTA</h3>
+          <div class="provider-list">
+            @for (provider of data.providers.rent; track provider.provider_id) {
+            <div class="provider-card" [title]="provider.provider_name">
+              <img [src]="'https://image.tmdb.org/t/p/w154' + provider.logo_path" [alt]="provider.provider_name" class="provider-logo">
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        @if (data.providers.buy && data.providers.buy.length > 0) {
+        <div class="provider-group">
+          <h3>COMPRA</h3>
+          <div class="provider-list">
+            @for (provider of data.providers.buy; track provider.provider_id) {
+            <div class="provider-card" [title]="provider.provider_name">
+              <img [src]="'https://image.tmdb.org/t/p/w154' + provider.logo_path" [alt]="provider.provider_name" class="provider-logo">
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+      </div>
+    </section>
+    }
 
     <!-- TRAILER SECTION (Deffered) -->
     @defer (on viewport) {

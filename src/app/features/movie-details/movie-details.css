@@ -172,6 +172,75 @@
   color: #ccc;
 }
 
+/* === Proveedores de Streaming === */
+.providers-section {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.providers-section h2 {
+  font-size: 1.2rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #06b6d4;
+  padding-left: 10px;
+}
+
+.providers-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.provider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.provider-group h3 {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.provider-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.provider-card {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  background-color: #1a1a1a;
+  border: 1px solid transparent;
+}
+
+.provider-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.provider-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* === Sección de Tráiler === */
 .trailer-section {
   margin-bottom: 3rem;

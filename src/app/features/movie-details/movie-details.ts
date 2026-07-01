@@ -9,11 +9,11 @@ import {
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
 import { FavoritesService } from '../../core/services/favorites.service';
-import { Movie } from '../../core/models/movie.model';
+import { Movie, CountryProviders } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
 import { MovieTrailerComponent } from './components/movie-trailer/movie-trailer';
 import { MovieCommentsComponent } from './components/movie-comments/movie-comments';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { CreditsResponse } from '../../core/models/cast.model';
 import { Location } from '@angular/common';
 
@@ -34,7 +34,7 @@ export class MovieDetails implements OnInit {
   @Input() id!: string;
 
   // Declaramos un Observable que contendrá TODOS los datos que necesitamos
-  movieData$!: Observable<{ details: Movie; credits: CreditsResponse }>;
+  movieData$!: Observable<{ details: Movie; credits: CreditsResponse; providers: CountryProviders | null }>;
 
   ngOnInit(): void {
     if (this.id) {
@@ -42,7 +42,31 @@ export class MovieDetails implements OnInit {
       this.movieData$ = forkJoin({
         details: this.movieService.getMovieById(this.id),
         credits: this.movieService.getMovieCredits(this.id),
-      });
+        providersRaw: this.movieService.getWatchProviders(this.id),
+      }).pipe(
+        map((res) => {
+          // Extraer la región del usuario (ej. "es-CO" -> "CO")
+          let region = 'US'; // Por defecto Estados Unidos
+          if (isPlatformBrowser(this.platformId) && typeof navigator !== 'undefined' && navigator.language) {
+            const parts = navigator.language.split('-');
+            if (parts.length > 1) {
+              region = parts[1].toUpperCase();
+            } else {
+              // Algunos navegadores solo dan el idioma (ej: "es" en vez de "es-ES"), lo intentamos mapear.
+              region = parts[0] === 'es' ? 'ES' : parts[0].toUpperCase();
+            }
+          }
+          
+          // Buscar proveedores para la región del usuario, sino cae en US, o nulo.
+          const countryData = res.providersRaw.results[region] || res.providersRaw.results['US'] || null;
+
+          return {
+            details: res.details,
+            credits: res.credits,
+            providers: countryData
+          };
+        })
+      );
     }
   }
 
